@@ -30,11 +30,40 @@ def findInFile(filename):
             for i,line in enumerate(list_lines):
                 matchList = re.findall(r, line, flags=0)
                 if matchList!=[]:
-                    print(list_lines[i-1])
-                    print(colors.WARNING + list_lines[i]+ colors.ENDC)
-                    print(list_lines[i-1])
+
+                    replacer_line = line
                     for string in matchList:
-                        replacer_line = line.replace('@"'+string+'"', 'Hola')
+                        #print the founded string
+                        print(list_lines[i - 1])
+                        print(replacer_line.replace('@"'+string+'"', colors.WARNING +'@"'+string+'"'+ colors.ENDC ))
+                        print(list_lines[i +1])
+
+                        print('\n')
+                        print(colors.BOLD +'String en código encontrada. ¿Que quieres hacer?\n'+colors.ENDC)
+                        print('     1. Crear nuevo string. Este string no existia antes en Localizable.strings\n')
+                        print('     2. Usar un string existente de Localizable.strings\n')
+                        print('     3. No hacer nada')
+
+                        try:
+                            print('\n')
+                            mode = int(raw_input('Opción: '))
+                        except ValueError:
+                            print('Tu ópcion introducida no es valida')
+
+                        if mode == 1:
+                            nombre = raw_input('Key del string: ')
+                            replacer_line = replacer_line.replace('@"' + string + '"', 'NSLocalizedString(@"'+nombre+'", nil)')
+                            addToLocalizable(nombre,string)
+                        if mode == 2:
+                            nombre = raw_input('Key del string: ')
+                            replacer_line = replacer_line.replace('@"' + string + '"','NSLocalizedString(@"' + nombre + '", nil)')
+                        if mode == 3:
+                            continue
+
+
+
+
+
                     new_file.write(replacer_line)
                 else:
                     new_file.write(line)
@@ -62,12 +91,5 @@ class colors:
 if __name__ == '__main__':
     main()
 
-# print("Opening the file %r" % filename)
-# target = open(filename, 'r+')
-# line = target.read(20)
-# print(line)
-# target.close()
-# print("Introduce the name of the file")
-#
-#print (colors.OKGREEN + "Warning: No active frommets remain. Continue?" + colors.ENDC)
+
 

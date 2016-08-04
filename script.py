@@ -38,15 +38,18 @@ def main():
 
 def add_to_localizable(key, string):
     localizable = open('Localizable.strings', 'a')
-    tupla = (key, string)
-    string = '"{0}" = "{1}";\n'.format(*tupla)
-    localizable.write(string)
-    localizable.close()
+    if key == 'commentStartFile':
+        localizable.write(string)
+    else:
+        tupla = (key, string)
+        string = '"{0}" = "{1}";\n'.format(*tupla)
+        localizable.write(string)
+        localizable.close()
 
 
 def find_in_file(filename):
     r = r'\@"(.*?)\"'
-
+    add_to_localizable('commentStartFile', '//' + filename +'\n')
     # Create temp file
     fh, abs_path = mkstemp()
     with open(abs_path, 'r+') as new_file:

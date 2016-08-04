@@ -3,8 +3,11 @@ from shutil import move
 from os import remove, close
 import re
 import sys
+from shutil import copyfile
 
 keys = []
+
+
 def main():
     fileCorrect = False
 
@@ -13,15 +16,16 @@ def main():
         try:
             file = open(filename, 'r')
             file.close()
+            copyfile(filename, filename + '_copia')
             fileCorrect = True
-        except (OSError, IOError,FileNotFoundError):
+        except (OSError, IOError, FileNotFoundError):
             print(Colors.FAIL + "File " + filename + " not found  \n" + Colors.ENDC)
-
 
         try:
             localizable = open('Localizable.strings', 'r')
-            global keys
-            keys = localizable.readlines()
+            # global keys
+            # keys = localizable.readlines()
+            localizable.close()
 
         except (OSError, IOError):
             print(Colors.FAIL + "Localizable.strings not found  \n" + Colors.ENDC)
@@ -38,11 +42,6 @@ def add_to_localizable(key, string):
     string = '"{0}" = "{1}";\n'.format(*tupla)
     localizable.write(string)
     localizable.close()
-
-def check_key_in_localizable(key):
-    for string in keys:
-        if string == '"'+key+'"':
-            print(key + " is already in Localizable.strings. Choose another one")
 
 
 def find_in_file(filename):
@@ -72,14 +71,20 @@ def find_in_file(filename):
                         print('     3. Continue')
                         print('\n')
 
-                        try:
-                            mode = int(input('Option: '))
-                        except ValueError:
-                            print('Not a valid option')
+                        validNumber = False
+                        while not validNumber:
+                            try:
+                                mode = int(input('Option: '))
+                                if mode > 3:
+                                    raise ValueError('Option out of range')
+                                else:
+                                    validNumber = True
+                            except ValueError:
+                                print('That\'s not a valid option')
 
                         if mode == 1:
                             nombre = input('String key: ')
-                            
+
                             replacer_line = replacer_line.replace('@"' + string + '"',
                                                                   'NSLocalizedString(@"' + nombre + '", nil)')
                             add_to_localizable(nombre, string)
@@ -96,11 +101,17 @@ def find_in_file(filename):
 
     close(fh)
 
-    # remove(filename)
+    remove(filename)
 
     # Move new file
-    move(abs_path, 'modificado')
+    move(abs_path, filename)
 
+
+# Method that check if the key is already in Localizable.strings. For future versions
+# def check_key_in_localizable(key):
+#    for string in keys:
+#        if string == '"'+key+'"':
+#            print(key + " is already in Localizable.strings. Choose another one")
 
 class Colors:
     HEADER = '\033[95m'

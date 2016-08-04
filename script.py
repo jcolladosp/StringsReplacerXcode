@@ -110,6 +110,26 @@ def find_in_file(filename):
     # Move new file
     move(abs_path, filename)
 
+    print(Colors.OKGREEN + 'File finished correctly. ¿What do you want to do now?' + Colors.ENDC)
+    print('     1. Edit other file\n')
+    print('     2. Exit\n')
+    validNumber = False
+    while not validNumber:
+        try:
+            mode = int(input('Option: '))
+            if mode > 2:
+                raise ValueError('Option out of range')
+            else:
+                validNumber = True
+        except ValueError:
+            print('That\'s not a valid option')
+    if mode == 1:
+        main()
+
+    if mode == 2:
+        exit()
+
+
 
 # Method that check if the key is already in Localizable.strings. For future versions
 # def check_key_in_localizable(key):

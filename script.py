@@ -6,8 +6,14 @@ import re
 
 
 def main():
-    filename = raw_input("Name of the file: ")
-    findInFile(filename)
+    fileCorrect = False
+
+    while not fileCorrect:
+        filename = raw_input("Name of the file: ")
+        try:
+            findInFile(filename)
+        except (OSError, IOError) as e:
+            print("File not found  \n")
 
 
 
@@ -43,9 +49,9 @@ def findInFile(filename):
                         print('     1. Crear nuevo string. Este string no existia antes en Localizable.strings\n')
                         print('     2. Usar un string existente de Localizable.strings\n')
                         print('     3. No hacer nada')
+                        print('\n')
 
                         try:
-                            print('\n')
                             mode = int(raw_input('Opción: '))
                         except ValueError:
                             print('Tu ópcion introducida no es valida')

@@ -89,7 +89,11 @@ def find_in_file(filename):
                                                                   'NSLocalizedString(@"' + nombre + '", nil)')
                             add_to_localizable(nombre, string)
                         if mode == 2:
-                            nombre = input('String key: ')
+                            default = string
+                            nombre = input("String key: [%s]" % default + chr(8) * 4)
+                            if not nombre:
+                                nombre = default
+
                             replacer_line = replacer_line.replace('@"' + string + '"',
                                                                   'NSLocalizedString(@"' + nombre + '", nil)')
                         if mode == 3:

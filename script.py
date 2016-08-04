@@ -4,7 +4,7 @@ from os import remove, close
 import re
 import sys
 
-
+keys = []
 def main():
     fileCorrect = False
 
@@ -20,7 +20,9 @@ def main():
 
         try:
             localizable = open('Localizable.strings', 'r')
-            localizable.close()
+            global keys
+            keys = localizable.readlines()
+
         except (OSError, IOError):
             print(Colors.FAIL + "Localizable.strings not found  \n" + Colors.ENDC)
             sys.exit()
@@ -36,6 +38,11 @@ def add_to_localizable(key, string):
     string = '"{0}" = "{1}";\n'.format(*tupla)
     localizable.write(string)
     localizable.close()
+
+def check_key_in_localizable(key):
+    for string in keys:
+        if string == '"'+key+'"':
+            print(key + " is already in Localizable.strings. Choose another one")
 
 
 def find_in_file(filename):
@@ -59,24 +66,25 @@ def find_in_file(filename):
                         print(list_lines[i + 1])
 
                         print('\n')
-                        print(Colors.BOLD + 'String en código encontrada. ¿Que quieres hacer?\n' + Colors.ENDC)
-                        print('     1. Crear nuevo string. Este string no existia antes en Localizable.strings\n')
-                        print('     2. Usar un string existente de Localizable.strings\n')
-                        print('     3. No hacer nada')
+                        print(Colors.BOLD + 'There\'s a string in the code. Choose an option\n' + Colors.ENDC)
+                        print('     1. New string. This string is not in Localizable.strings\n')
+                        print('     2. Use a existent string in Localizable.strings\n')
+                        print('     3. Continue')
                         print('\n')
 
                         try:
-                            mode = int(input('Opción: '))
+                            mode = int(input('Option: '))
                         except ValueError:
-                            print('Tu ópcion introducida no es valida')
+                            print('Not a valid option')
 
                         if mode == 1:
-                            nombre = input('Key del string: ')
+                            nombre = input('String key: ')
+                            
                             replacer_line = replacer_line.replace('@"' + string + '"',
                                                                   'NSLocalizedString(@"' + nombre + '", nil)')
                             add_to_localizable(nombre, string)
                         if mode == 2:
-                            nombre = input('Key del string: ')
+                            nombre = input('String key: ')
                             replacer_line = replacer_line.replace('@"' + string + '"',
                                                                   'NSLocalizedString(@"' + nombre + '", nil)')
                         if mode == 3:
